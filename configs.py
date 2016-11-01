@@ -1,7 +1,7 @@
 import os
 import sys
 
-from src import yaml_parser
+from SwarmBootstrapUtils import yaml_parser
 
 
 def get_main_config(config_dir):
