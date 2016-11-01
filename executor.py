@@ -83,7 +83,7 @@ def start_synchronizer(synchronizer_config, tracker, log_dir, config_dir):
     my_env = os.environ.copy()
     my_env['ROS_IP'] = '127.0.0.1'
     my_env['ROS_MASTER_URI'] = 'http://localhost:' + synchronizer_config['ros_master_port']
-    launch_ros_master(my_env, synchronizer_config['port'], tracker, config_dir, log_dir)
+    launch_ros_master(my_env, synchronizer_config['ros_master_port'], tracker, config_dir, log_dir)
     set_ros_parameters(my_env, tracker, synchronizer_config['rosparam'], log_dir)
     synchronizer_launch_cmd = 'rosrun rats ' + synchronizer_config['python_node']
     execute_cmd(synchronizer_launch_cmd, my_env, log_dir + '/launch_synchronizer.log', tracker)
