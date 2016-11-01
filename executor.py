@@ -8,6 +8,18 @@ import time
 from SwarmBootstrapUtils import yaml_parser
 
 
+def check_unique_integer_id(bebop_configs):
+    ids = {}
+    for bebop, config in bebop_configs:
+        unique_integer_id = config['beswarm_config']['rosparam']['unique_integer_id']
+        if unique_integer_id in ids:
+            print(bebop + ' has the same integer id number ' + unique_integer_id + ' with ' + ids[
+                unique_integer_id])
+            exit()
+        else:
+            ids[unique_integer_id] = bebop
+
+
 def point_camera_downward(my_env, tracker, log_dir):
     point_camera_cmd = 'rostopic pub /bebop/camera_control geometry_msgs/Twist [0.0,0.0,' \
                        '0.0] [0.0,-50.0,0.0]'
