@@ -13,8 +13,8 @@ def check_unique_integer_id(bebop_configs):
     for bebop, config in bebop_configs.items():
         unique_integer_id = config['beswarm_config']['rosparam']['unique_integer_id']
         if unique_integer_id in ids:
-            print(bebop + ' has the same integer id number ' + unique_integer_id + ' with ' + ids[
-                unique_integer_id])
+            print(str(bebop) + ' has the same integer id number ' + str(
+                unique_integer_id) + ' with ' + str(ids[unique_integer_id]))
             exit()
         else:
             ids[unique_integer_id] = bebop
