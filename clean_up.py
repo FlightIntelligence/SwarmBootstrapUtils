@@ -1,12 +1,8 @@
-import glob
 import os
 import signal
 
 
-def clean_up(active_processes, opened_files, config_dir):
-    # remove all generated tmp files
-    _remove_tmp_files(config_dir)
-    # terminate all processes
+def clean_up(active_processes, opened_files):
     _terminate_all_processes(active_processes)
     _close_all_opened_files(opened_files)
 
@@ -29,11 +25,3 @@ def _close_all_opened_files(opened_files):
     for f in opened_files:
         f.flush()
         f.close()
-
-
-def _remove_tmp_files(config_dir):
-    """
-    Removes all generated tmp files.
-    """
-    for file_name in glob.glob(config_dir + '/*_tmp.yaml'):
-        os.remove(file_name)
