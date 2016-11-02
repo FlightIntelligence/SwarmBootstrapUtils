@@ -135,4 +135,4 @@ def execute_cmd(cmd, my_env, log_file_abs_path, tracker):
 
 def execute_cmd_and_get_output(cmd):
     print(cmd)
-    return subprocess.check_output(cmd.split()).decode("utf-8").replace('\n', '')
+    return subprocess.check_output(cmd.split()).decode("utf-8").rstrip()

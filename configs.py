@@ -2,7 +2,19 @@ import os
 import sys
 from distutils import dir_util
 
+from SwarmBootstrapUtils import executor
 from SwarmBootstrapUtils import yaml_parser
+
+
+def log_commit_numbers(log_dir):
+    log_info = ''
+    log_info += executor.execute_cmd_and_get_output('git rev-parse --show-toplevel HEAD')
+    log_info += '\n'
+    log_info += executor.execute_cmd_and_get_output(
+        'git submodule foreach -q git rev-parse --show-toplevel HEAD')
+
+    with open(log_dir + '/commit_numbers.log', 'a+') as log_file:
+        log_file.write(log_info)
 
 
 def copy_config_to_log_dir(config_dir, log_dir):
