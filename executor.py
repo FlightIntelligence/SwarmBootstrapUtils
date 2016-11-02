@@ -6,25 +6,6 @@ import subprocess
 import time
 
 from SwarmBootstrapUtils import yaml_parser
-from distutils import dir_util
-
-
-def copy_config_to_log_dir(config_dir, log_dir):
-    log_config_dir = log_dir + '/config/' + config_dir.split('/')[-1]
-    dir_util.copy_tree(config_dir, log_config_dir)
-    return log_config_dir
-
-
-def check_unique_integer_id(bebop_configs):
-    ids = {}
-    for bebop, config in bebop_configs.items():
-        unique_integer_id = config['beswarm_config']['rosparam']['unique_integer_id']
-        if unique_integer_id in ids:
-            print(str(bebop) + ' has the same integer id number ' + str(
-                unique_integer_id) + ' with ' + str(ids[unique_integer_id]))
-            exit()
-        else:
-            ids[unique_integer_id] = bebop
 
 
 def point_camera_downward(my_env, tracker, log_dir):
