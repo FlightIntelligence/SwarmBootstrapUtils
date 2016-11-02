@@ -56,7 +56,7 @@ def launch_arlocros(my_env, tracker, config_dir, log_dir):
 def record_rosbag(my_env, tracker, log_dir):
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
-    record_rosbag_cmd = 'rosbag record -o ' + log_dir + ' /bebop/image_raw /bebop/cmd_vel ' \
+    record_rosbag_cmd = 'rosbag record -o ' + log_dir + '/ /bebop/image_raw /bebop/cmd_vel ' \
                                                         '/bebop/odom /tf ' \
                                                         '/bebop/camera_info /arlocros/marker_pose' \
                                                         ' /arlocros/fused_pose'
