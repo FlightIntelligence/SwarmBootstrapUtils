@@ -13,8 +13,10 @@ def log_commit_numbers(log_dir):
     log_info += executor.execute_cmd_and_get_output(
         'git submodule foreach -q git rev-parse --show-toplevel HEAD')
 
-    with open(log_dir + '/commit_numbers.log', 'a+') as log_file:
-        log_file.write(log_info)
+    log_file = log_dir + '/commit_numbers.log'
+    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+    with open(log_file, 'a+') as f:
+        f.write(log_info)
 
 
 def copy_config_to_log_dir(config_dir, log_dir):
