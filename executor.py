@@ -20,25 +20,14 @@ def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_dir):
     time.sleep(2)
 
 
-def launch_arlocros(my_env, tracker, config_dir, log_dir):
-    arlocros_config_file = config_dir + '/arlocros.yaml'
-
-    if os.path.isfile(arlocros_config_file):
-        # delete build script folder
-        build_script_dir = execute_cmd_and_get_output(
-            'rospack find rats') + '/ARLocROS/build/scripts'
-        shutil.rmtree(build_script_dir, ignore_errors=True)
-        # parse the configuration file and load it to the parameter server
-        substituted_arlocros_config_file = yaml_parser.substitute(arlocros_config_file)
-        load_param_cmd = 'rosparam load ' + substituted_arlocros_config_file
-        execute_cmd(load_param_cmd, my_env, log_dir + '/rosparam_load.log', tracker)
-        time.sleep(2)
-        # launch the java node
-        arlocros_launch_cmd = 'rosrun rats ARLocROS arlocros.ARLoc __name:=ARLocROS'
-        execute_cmd(arlocros_launch_cmd, my_env, log_dir + '/launch_arlocros.log', tracker)
-        time.sleep(2)
-    else:
-        print('FILE NOT FOUND: ', arlocros_config_file)
+def launch_arlocros(my_env, tracker, log_dir):
+    # delete build script folder
+    build_script_dir = execute_cmd_and_get_output('rospack find rats') + '/ARLocROS/build/scripts'
+    shutil.rmtree(build_script_dir, ignore_errors=True)
+    # launch the java node
+    arlocros_launch_cmd = 'rosrun rats ARLocROS arlocros.ARLoc __name:=ARLocROS'
+    execute_cmd(arlocros_launch_cmd, my_env, log_dir + '/launch_arlocros.log', tracker)
+    time.sleep(2)
 
 
 def record_rosbag(my_env, tracker, log_dir):
@@ -56,31 +45,18 @@ def launch_xbox_controller(my_env, tracker, log_dir):
     execute_cmd(launch_xbox_controller_cmd, my_env, log_dir + '/launch_xbox.log', tracker)
 
 
-def launch_beswarm(my_env, tracker, beswarm_config, config_dir, log_dir):
-    beswarm_config_file = config_dir + '/beswarm.yaml'
-    my_env['LOG_DIR'] = log_dir
-
-    if os.path.isfile(beswarm_config_file):
-        # delete build script folder
-        build_script_dir = execute_cmd_and_get_output(
-            'rospack find rats') + '/BeSwarm/build/scripts'
-        shutil.rmtree(build_script_dir, ignore_errors=True)
-        # parse the beswarm config file and load it to the parameter server
-        substituted_beswarm_config_file = yaml_parser.substitute(beswarm_config_file)
-        load_param_cmd = 'rosparam load ' + substituted_beswarm_config_file
-        execute_cmd(load_param_cmd, my_env, log_dir + '/rosparam_load.log', tracker)
-        time.sleep(2)
-        # set some remaining parameters to the parameter server
-        set_ros_parameters(my_env, tracker, beswarm_config['rosparam'], log_dir)
-        time.sleep(2)
-        # launch the java node
-        beswarm_launch_cmd = 'rosrun rats BeSwarm ' + beswarm_config['javanode'] + ' __name:=' + \
-                             beswarm_config['nodename']
-        execute_cmd(beswarm_launch_cmd, my_env, log_dir + '/launch_beswarm.log', tracker)
-        time.sleep(2)
-    else:
-        print('FILE NOT FOUND: ', beswarm_config_file)
-        exit()
+def launch_beswarm(my_env, tracker, beswarm_config, log_dir):
+    my_env['LOG_DIR'] = log_dir  # delete build script folder
+    build_script_dir = execute_cmd_and_get_output('rospack find rats') + '/BeSwarm/build/scripts'
+    shutil.rmtree(build_script_dir, ignore_errors=True)
+    # set some remaining parameters to the parameter server
+    set_ros_parameters(my_env, tracker, beswarm_config['rosparam'], log_dir)
+    time.sleep(2)
+    # launch the java node
+    beswarm_launch_cmd = 'rosrun rats BeSwarm ' + beswarm_config['javanode'] + ' __name:=' + \
+                         beswarm_config['nodename']
+    execute_cmd(beswarm_launch_cmd, my_env, log_dir + '/launch_beswarm.log', tracker)
+    time.sleep(2)
 
 
 def start_synchronizer(synchronizer_config, tracker, log_dir, config_dir):
