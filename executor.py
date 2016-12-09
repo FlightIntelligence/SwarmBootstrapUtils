@@ -118,9 +118,13 @@ def launch_ros_master(my_env, port, tracker, config_dir, log_dir):
 
 
 def load_ros_parameters_from_file(file_path, my_env, log_dir):
-    substituted_file = yaml_parser.substitute(file_path)
-    load_param_cmd = 'rosparam load ' + substituted_file
-    execute_cmd_and_wait(load_param_cmd, my_env, log_dir + '/rosparam_load.log')
+    if os.path.isfile(file_path):
+        substituted_file = yaml_parser.substitute(file_path)
+        load_param_cmd = 'rosparam load ' + substituted_file
+        execute_cmd_and_wait(load_param_cmd, my_env, log_dir + '/rosparam_load.log')
+    else:
+        print('FILE NOT FOUND: ', file_path)
+        exit()
 
 
 def set_ros_parameters(my_env, tracker, ros_params, log_dir):
