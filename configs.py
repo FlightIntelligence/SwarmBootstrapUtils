@@ -28,7 +28,7 @@ def copy_config_to_log_dir(config_dir, log_dir):
 def check_unique_integer_id(bebop_configs):
     ids = {}
     for bebop, config in bebop_configs.items():
-        unique_integer_id = config['beswarm_config']['rosparam']['unique_integer_id']
+        unique_integer_id = config['rosparam']['unique_integer_id']
         if unique_integer_id in ids:
             print(str(bebop) + ' has the same integer id number ' + str(
                 unique_integer_id) + ' with ' + str(ids[unique_integer_id]))
