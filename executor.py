@@ -133,13 +133,12 @@ def execute_cmd(cmd, my_env, log_file_abs_path, tracker):
     tracker['opened_files'].append(log_file)
 
 
-def execute_cmd_and_wait(cmd, my_env, log_file_abs_path, tracker):
+def execute_cmd_and_wait(cmd, my_env, log_file_abs_path):
     print(cmd)
     os.makedirs(os.path.dirname(log_file_abs_path), exist_ok=True)
     log_file = open(log_file_abs_path, 'a+')
-    tracker['processes'].append(
-        subprocess.call(cmd.split(), env=my_env, stdout=log_file, stderr=subprocess.STDOUT))
-    tracker['opened_files'].append(log_file)
+    subprocess.call(cmd.split(), env=my_env, stdout=log_file, stderr=subprocess.STDOUT)
+    log_file.close()
 
 
 def execute_cmd_and_get_output(cmd):
