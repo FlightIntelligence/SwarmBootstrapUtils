@@ -49,9 +49,6 @@ def launch_beswarm(my_env, tracker, beswarm_config, log_dir):
     my_env['LOG_DIR'] = log_dir  # delete build script folder
     build_script_dir = execute_cmd_and_get_output('rospack find rats') + '/BeSwarm/build/scripts'
     shutil.rmtree(build_script_dir, ignore_errors=True)
-    # set some remaining parameters to the parameter server
-    set_ros_parameters(my_env, beswarm_config['rosparam'], log_dir)
-    time.sleep(2)
     # launch the java node
     beswarm_launch_cmd = 'rosrun rats BeSwarm ' + beswarm_config['javanode'] + ' __name:=' + \
                          beswarm_config['nodename']
