@@ -50,7 +50,7 @@ def launch_beswarm(my_env, tracker, beswarm_config, log_dir):
     build_script_dir = execute_cmd_and_get_output('rospack find rats') + '/BeSwarm/build/scripts'
     shutil.rmtree(build_script_dir, ignore_errors=True)
     # set some remaining parameters to the parameter server
-    set_ros_parameters(my_env, tracker, beswarm_config['rosparam'], log_dir)
+    set_ros_parameters(my_env, beswarm_config['rosparam'], log_dir)
     time.sleep(2)
     # launch the java node
     beswarm_launch_cmd = 'rosrun rats BeSwarm ' + beswarm_config['javanode'] + ' __name:=' + \
@@ -64,7 +64,7 @@ def start_synchronizer(synchronizer_config, tracker, log_dir, config_dir):
     my_env['ROS_IP'] = '127.0.0.1'
     my_env['ROS_MASTER_URI'] = 'http://localhost:' + synchronizer_config['ros_master_port']
     launch_ros_master(my_env, synchronizer_config['ros_master_port'], tracker, config_dir, log_dir)
-    set_ros_parameters(my_env, tracker, synchronizer_config['rosparam'], log_dir)
+    set_ros_parameters(my_env, synchronizer_config['rosparam'], log_dir)
     synchronizer_launch_cmd = 'rosrun rats ' + synchronizer_config['python_node']
     execute_cmd(synchronizer_launch_cmd, my_env, log_dir + '/launch_synchronizer.log', tracker)
     time.sleep(2)
@@ -103,11 +103,11 @@ def load_ros_parameters_from_file(file_path, my_env, log_dir):
         exit()
 
 
-def set_ros_parameters(my_env, tracker, ros_params, log_dir):
+def set_ros_parameters(my_env, ros_params, log_dir):
     log_file = log_dir + '/set_rosparam.log'
     for key, value in ros_params.items():
         set_param_cmd = 'rosparam set ' + str(key) + ' ' + str(value)
-        execute_cmd(set_param_cmd, my_env, log_file, tracker)
+        execute_cmd_and_wait(set_param_cmd, my_env, log_file)
 
 
 def execute_cmd(cmd, my_env, log_file_abs_path, tracker):
