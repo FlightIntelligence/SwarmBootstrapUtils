@@ -108,6 +108,12 @@ def set_ros_parameters(my_env, ros_params, log_dir):
         execute_cmd_and_wait(set_param_cmd, my_env, log_file)
 
 
+def relay_topics(my_env, topics, namespace, tracker, log_dir):
+    for topic in topics:
+        relay_cmd = 'rosrun topic_tools relay ' + topic + ' /' + namespace + topic
+        execute_cmd(relay_cmd, my_env, log_dir + '/topic_relay.log', tracker)
+
+
 def execute_cmd(cmd, my_env, log_file_abs_path, tracker):
     print(cmd)
     os.makedirs(os.path.dirname(log_file_abs_path), exist_ok=True)
