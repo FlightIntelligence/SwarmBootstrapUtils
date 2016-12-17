@@ -68,6 +68,14 @@ def start_synchronizer(synchronizer_config, tracker, log_dir, config_dir):
     time.sleep(2)
 
 
+def start_pose_aggregation(pose_aggregation_config, tracker, log_dir, config_dir):
+    my_env = os.environ.copy()
+    my_env['ROS_IP'] = '127.0.0.1'
+    my_env['ROS_MASTER_URI'] = 'http://localhost:' + pose_aggregation_config['ros_master_port']
+    launch_ros_master(my_env, pose_aggregation_config['ros_master_port'],
+                      pose_aggregation_config['sync_config'], tracker, config_dir, log_dir)
+
+
 def launch_ros_master(my_env, port, sync_config_file, tracker, config_dir, log_dir):
     master_sync_config_file = config_dir + '/' + sync_config_file
     if os.path.isfile(master_sync_config_file):
