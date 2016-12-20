@@ -17,7 +17,6 @@ def point_camera_downward(my_env, tracker, log_dir):
 def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_dir):
     bebop_launch_cmd = 'roslaunch bebop_driver bebop_node.launch ip:=' + bebop_ip
     execute_cmd(bebop_launch_cmd, my_env, log_dir + '/bebop_autonomy.log', tracker)
-    time.sleep(2)
 
 
 def launch_arlocros(my_env, tracker, log_dir):
@@ -27,7 +26,6 @@ def launch_arlocros(my_env, tracker, log_dir):
     # launch the java node
     arlocros_launch_cmd = 'rosrun rats ARLocROS arlocros.ARLoc __name:=ARLocROS'
     execute_cmd(arlocros_launch_cmd, my_env, log_dir + '/launch_arlocros.log', tracker)
-    time.sleep(2)
 
 
 def record_rosbag(my_env, tracker, log_dir):
@@ -53,7 +51,6 @@ def launch_beswarm(my_env, tracker, beswarm_config, log_dir):
     beswarm_launch_cmd = 'rosrun rats BeSwarm ' + beswarm_config['javanode'] + ' __name:=' + \
                          beswarm_config['nodename']
     execute_cmd(beswarm_launch_cmd, my_env, log_dir + '/launch_beswarm.log', tracker)
-    time.sleep(2)
 
 
 def start_synchronizer(synchronizer_config, tracker, log_dir, config_dir):
@@ -65,7 +62,6 @@ def start_synchronizer(synchronizer_config, tracker, log_dir, config_dir):
     set_ros_parameters(my_env, synchronizer_config['rosparam'], log_dir)
     synchronizer_launch_cmd = 'rosrun rats ' + synchronizer_config['python_node']
     execute_cmd(synchronizer_launch_cmd, my_env, log_dir + '/launch_synchronizer.log', tracker)
-    time.sleep(2)
 
 
 def start_pose_aggregation(pose_aggregation_config, tracker, log_dir, config_dir):
@@ -87,13 +83,11 @@ def launch_ros_master(my_env, port, sync_config_file, tracker, config_dir, log_d
         master_discovery_cmd = 'rosrun master_discovery_fkie master_discovery ' \
                                '_mcast_group:=224.0.0.1'
         execute_cmd(master_discovery_cmd, my_env, log_dir + '/master_discovery.log', tracker)
-        time.sleep(2)
         # start master_sync_fkie (to sync with other ros masters
         substituted_master_sync_config_file = yaml_parser.substitute(master_sync_config_file)
         sync_cmd = 'rosrun master_sync_fkie master_sync _interface_url:=' + \
                    substituted_master_sync_config_file
         execute_cmd(sync_cmd, my_env, log_dir + '/sync_cmd.log', tracker)
-        time.sleep(2)
     else:
         print('FILE NOT FOUND: ', master_sync_config_file)
         exit()
