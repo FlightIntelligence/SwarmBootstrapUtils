@@ -5,6 +5,8 @@ import subprocess
 
 import time
 
+import signal
+
 from SwarmBootstrapUtils import yaml_parser
 
 
@@ -16,7 +18,22 @@ def point_camera_downward(my_env, tracker, log_dir):
 
 def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_dir):
     bebop_launch_cmd = 'roslaunch bebop_driver bebop_node.launch ip:=' + bebop_ip
-    execute_cmd(bebop_launch_cmd, my_env, log_dir + '/bebop_autonomy.log', tracker)
+
+    success = False
+    while not success:
+        bebop_autonomy = execute_cmd(bebop_launch_cmd, my_env, log_dir + '/bebop_autonomy.log',
+                                     tracker)
+        listen_to_odom_cmd = 'rostopic echo -n 1 /bebop/odom'
+        listen_process = subprocess.Popen(listen_to_odom_cmd.split(), env=my_env)
+        time.sleep(3)
+        status = listen_process.poll()
+        if status is None:
+            print('Cannot get odom message. Relaunch bebop_autonomy.')
+            os.killpg(os.getpgid(bebop_autonomy.pid), signal.SIGINT)
+            while bebop_autonomy.poll() is None:
+                time.sleep(0.1)
+        else:
+            success = True
 
 
 def launch_arlocros(my_env, tracker, log_dir):
@@ -120,9 +137,10 @@ def execute_cmd(cmd, my_env, log_file_abs_path, tracker):
     print(cmd)
     os.makedirs(os.path.dirname(log_file_abs_path), exist_ok=True)
     log_file = open(log_file_abs_path, 'a+')
-    tracker['processes'].append(
-        subprocess.Popen(cmd.split(), env=my_env, stdout=log_file, stderr=subprocess.STDOUT))
+    process = subprocess.Popen(cmd.split(), env=my_env, stdout=log_file, stderr=subprocess.STDOUT)
+    tracker['processes'].append(process)
     tracker['opened_files'].append(log_file)
+    return process
 
 
 def execute_cmd_and_wait(cmd, my_env, log_file_abs_path):
