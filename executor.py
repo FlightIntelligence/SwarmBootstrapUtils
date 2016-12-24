@@ -25,7 +25,7 @@ def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_dir):
                                      tracker)
         listen_to_odom_cmd = 'rostopic echo -n 1 /bebop/odom'
         listen_process = subprocess.Popen(listen_to_odom_cmd.split(), env=my_env)
-        time.sleep(3)
+        time.sleep(10)
         status = listen_process.poll()
         if status is None:
             print('Cannot get odom message. Relaunch bebop_autonomy.')
