@@ -5,8 +5,6 @@ import subprocess
 
 import time
 
-import signal
-
 from SwarmBootstrapUtils import yaml_parser
 
 
@@ -16,29 +14,9 @@ def point_camera_downward(my_env, tracker, log_dir):
     execute_cmd(point_camera_cmd, my_env, log_dir + '/point_cam_downward.log', tracker)
 
 
-def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_dir):
+def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_file):
     bebop_launch_cmd = 'roslaunch bebop_driver bebop_node.launch ip:=' + bebop_ip
-
-    success = False
-    count = 1
-    while not success:
-        bebop_autonomy = execute_cmd(bebop_launch_cmd, my_env,
-                                     log_dir + '/bebop_autonomy' + str(count) + '.log', tracker)
-        count += 1
-        listen_to_odom_cmd = 'rostopic echo -n 2 /bebop/image_raw'
-        listen_process = subprocess.Popen(listen_to_odom_cmd.split(), env=my_env,
-                                          stdout=subprocess.DEVNULL)
-        time.sleep(10)
-        status = listen_process.poll()
-        if status is None:
-            print('Did not receive any image. Relaunch bebop_autonomy.')
-            bebop_autonomy.kill()
-            listen_process.kill()
-            while bebop_autonomy.poll() is None and listen_process.poll() is None:
-                time.sleep(0.1)
-        else:
-            print('Received 2 image_raw messages')
-            success = True
+    return execute_cmd(bebop_launch_cmd, my_env, log_file, tracker)
 
 
 def launch_arlocros(my_env, tracker, log_dir):
