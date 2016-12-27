@@ -30,12 +30,12 @@ def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_dir):
         status = listen_process.poll()
         if status is None:
             print('Did not receive any image. Relaunch bebop_autonomy.')
-            bebop_autonomy.kill()
+            execute_cmd_and_wait('rosnode kill /bebop/bebop_driver', my_env,
+                                 log_dir + '/cleanup' + str(count) + '.log')
             listen_process.kill()
             while bebop_autonomy.poll() is None and listen_process.poll() is None:
                 time.sleep(0.1)
-            cleanup_cmd = 'rosnode cleanup'
-            execute_cmd_and_wait(cleanup_cmd, my_env, log_dir + '/cleanup' + str(count) + '.log')
+                subprocess.call('rosnode cleanup'.split(), env=my_env)
         else:
             print('Received 2 image_raw messages')
             success = True
