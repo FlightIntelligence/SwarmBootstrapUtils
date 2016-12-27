@@ -92,6 +92,9 @@ def start_pose_aggregation(pose_aggregation_config, tracker, log_dir, config_dir
     my_env['ROS_MASTER_URI'] = 'http://localhost:' + pose_aggregation_config['ros_master_port']
     launch_ros_master(my_env, pose_aggregation_config['ros_master_port'],
                       pose_aggregation_config['sync_config'], tracker, config_dir, log_dir)
+    rosbag_cmd = 'rosbag record -a -o ' + log_dir + '/'
+    execute_cmd(rosbag_cmd, my_env, log_dir + '/record_rosbag.log', tracker)
+
 
 
 def launch_ros_master(my_env, port, sync_config_file, tracker, config_dir, log_dir):
