@@ -18,10 +18,12 @@ def read(yaml_file):
             print(exc)
 
 
-def substitute(yaml_file):
+def substitute(yaml_file, postfix='_tmp'):
     """
     Parses a yaml file. A new temporary yaml file will be generated based on the input file with
     all the substitution arguments replaced by their values.
+    :param postfix: the postfix of the generated file
+    :type postfix: str
     :param yaml_file: the absolute directory of the yaml file to be parsed
     :type yaml_file: str
     :return: the absolute directory of the new temporary yaml file
@@ -51,7 +53,7 @@ def substitute(yaml_file):
         exit()
 
     # the absolute directory of the temporary file
-    substituted_file = yaml_file.replace('.yaml', '_tmp.yaml')
+    substituted_file = yaml_file.replace('.yaml', postfix + '.yaml')
 
     # write the temporary file to disk
     tmp_file = open(substituted_file, 'w')
