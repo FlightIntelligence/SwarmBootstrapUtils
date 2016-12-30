@@ -37,8 +37,8 @@ def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_dir):
                 time.sleep(0.1)
                 rosnode_cleanup = subprocess.Popen('rosnode cleanup'.split(), env=my_env,
                                                    stdin=subprocess.PIPE)
-                a.communicate(b'y\n')
-                a.wait()
+                rosnode_cleanup.communicate(b'y\n')
+                rosnode_cleanup.wait()
         else:
             print('Received 2 image_raw messages')
             success = True
