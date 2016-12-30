@@ -1,6 +1,7 @@
 import os
 
 import yaml
+import uuid
 
 
 def read(yaml_file):
@@ -53,7 +54,8 @@ def substitute(yaml_file, postfix='_tmp'):
         exit()
 
     # the absolute directory of the temporary file
-    substituted_file = yaml_file.replace('.yaml', postfix + '.yaml')
+    unique_id = uuid.uuid4()
+    substituted_file = yaml_file.replace('.yaml', postfix + unique_id + '.yaml')
 
     # write the temporary file to disk
     tmp_file = open(substituted_file, 'w')
