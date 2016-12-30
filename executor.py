@@ -37,8 +37,8 @@ def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_dir):
                 time.sleep(0.1)
                 rosnode_cleanup = subprocess.Popen('rosnode cleanup'.split(), env=my_env,
                                                    stdin=subprocess.PIPE)
-                rosnode_cleanup.communicate(b'y\n')
-                rosnode_cleanup.wait()
+                a.communicate(b'y\n')
+                a.wait()
         else:
             print('Received 2 image_raw messages')
             success = True
@@ -145,8 +145,7 @@ def relay_topics(my_env, topics, namespace, tracker, log_dir):
 
 def execute_cmd(cmd, my_env, log_file_abs_path, tracker):
     print(cmd)
-    os.makedirs(os.path.dirname(log_file_abs_path), exist_ok=True)
-    log_file = open(log_file_abs_path, 'a+')
+    log_file = open_file(log_file_abs_path)
     process = subprocess.Popen(cmd.split(), env=my_env, stdout=log_file, stderr=subprocess.STDOUT)
     tracker['processes'].append(process)
     tracker['opened_files'].append(log_file)
@@ -155,8 +154,7 @@ def execute_cmd(cmd, my_env, log_file_abs_path, tracker):
 
 def execute_cmd_and_wait(cmd, my_env, log_file_abs_path):
     print(cmd)
-    os.makedirs(os.path.dirname(log_file_abs_path), exist_ok=True)
-    log_file = open(log_file_abs_path, 'a+')
+    log_file = open_file(log_file_abs_path)
     subprocess.call(cmd.split(), env=my_env, stdout=log_file, stderr=subprocess.STDOUT)
     log_file.close()
 
@@ -164,3 +162,9 @@ def execute_cmd_and_wait(cmd, my_env, log_file_abs_path):
 def execute_cmd_and_get_output(cmd):
     print(cmd)
     return subprocess.check_output(cmd.split()).decode("utf-8").rstrip()
+
+
+def open_file(file_abs_path):
+    os.makedirs(os.path.dirname(file_abs_path), exist_ok=True)
+    log_file = open(file_abs_path, 'a+')
+    return log_file
