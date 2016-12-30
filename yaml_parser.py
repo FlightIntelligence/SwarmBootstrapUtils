@@ -54,8 +54,8 @@ def substitute(yaml_file, postfix='_tmp'):
         exit()
 
     # the absolute directory of the temporary file
-    unique_id = uuid.uuid4()
-    substituted_file = yaml_file.replace('.yaml', postfix + unique_id + '.yaml')
+    unique_id_str = str(uuid.uuid4())
+    substituted_file = yaml_file.replace('.yaml', postfix + unique_id_str + '.yaml')
 
     # write the temporary file to disk
     tmp_file = open(substituted_file, 'w')
