@@ -35,7 +35,10 @@ def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_dir):
             listen_process.kill()
             while bebop_autonomy.poll() is None and listen_process.poll() is None:
                 time.sleep(0.1)
-                subprocess.call('rosnode cleanup'.split(), env=my_env)
+                rosnode_cleanup = subprocess.Popen('rosnode cleanup'.split(), env=my_env,
+                                                   stdin=subprocess.PIPE)
+                rosnode_cleanup.communicate(b'y\n')
+                rosnode_cleanup.wait()
         else:
             print('Received 2 image_raw messages')
             success = True
@@ -94,7 +97,6 @@ def start_pose_aggregation(pose_aggregation_config, tracker, log_dir, config_dir
                       pose_aggregation_config['sync_config'], tracker, config_dir, log_dir)
     rosbag_cmd = 'rosbag record -a -o ' + log_dir + '/'
     execute_cmd(rosbag_cmd, my_env, log_dir + '/record_rosbag.log', tracker)
-
 
 
 def launch_ros_master(my_env, port, sync_config_file, tracker, config_dir, log_dir):
