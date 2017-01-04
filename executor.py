@@ -17,9 +17,8 @@ def point_camera_downward(my_env, tracker, log_dir):
 def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_dir):
     bebop_launch_cmd = 'roslaunch bebop_driver bebop_node.launch ip:=' + bebop_ip
 
-    success = False
     count = 1
-    while not success:
+    while True:
         bebop_autonomy = execute_cmd(bebop_launch_cmd, my_env,
                                      log_dir + '/bebop_autonomy' + str(count) + '.log', tracker)
         count += 1
@@ -39,9 +38,11 @@ def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_dir):
                                                    stdin=subprocess.PIPE)
                 rosnode_cleanup.communicate(b'y\n')
                 rosnode_cleanup.wait()
+
+            time.sleep(1)
         else:
             print('Received 2 image_raw messages')
-            success = True
+            return
 
 
 def launch_arlocros(my_env, tracker, log_dir):
