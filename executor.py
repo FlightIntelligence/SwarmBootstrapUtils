@@ -144,6 +144,11 @@ def relay_topics(my_env, topics, namespace, tracker, log_dir):
         execute_cmd(relay_cmd, my_env, log_dir + '/topic_relay.log', tracker)
 
 
+def relay_one_topic(my_env, input_topic, output_topic, tracker, logdir):
+    relay_cmd = 'rosrun topic_tools relay ' + input_topic + ' ' + output_topic
+    execute_cmd(relay_cmd, my_env, logdir + '/one_topic_relay.log', tracker)
+
+
 def execute_cmd(cmd, my_env, log_file_abs_path, tracker):
     print(cmd)
     log_file = open_file(log_file_abs_path)
