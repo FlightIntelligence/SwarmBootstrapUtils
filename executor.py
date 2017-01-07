@@ -81,7 +81,6 @@ def launch_beswarm(my_env, tracker, beswarm_config, log_dir):
 
 def start_synchronizer(synchronizer_config, tracker, log_dir, config_dir):
     my_env = os.environ.copy()
-    my_env['ROS_IP'] = '127.0.0.1'
     my_env['ROS_MASTER_URI'] = 'http://localhost:' + synchronizer_config['ros_master_port']
     launch_ros_master(my_env, synchronizer_config['ros_master_port'],
                       synchronizer_config['sync_config'], tracker, config_dir, log_dir)
@@ -92,7 +91,6 @@ def start_synchronizer(synchronizer_config, tracker, log_dir, config_dir):
 
 def start_pose_aggregation(pose_aggregation_config, tracker, log_dir, config_dir):
     my_env = os.environ.copy()
-    my_env['ROS_IP'] = '127.0.0.1'
     my_env['ROS_MASTER_URI'] = 'http://localhost:' + pose_aggregation_config['ros_master_port']
     launch_ros_master(my_env, pose_aggregation_config['ros_master_port'],
                       pose_aggregation_config['sync_config'], tracker, config_dir, log_dir)
