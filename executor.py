@@ -45,7 +45,7 @@ def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_dir):
             return
 
 
-def launch_arlocros(my_env, tracker, log_dir):
+def launch_arlocros(my_env, number_of_arlocros, tracker, log_dir):
     rats_dir = execute_cmd_and_get_output('rospack find rats')
     # delete build script folder
     build_script_dir = rats_dir + '/ARLocROS/build/scripts'
@@ -60,9 +60,14 @@ def launch_arlocros(my_env, tracker, log_dir):
         with open(arlocros_run_script_path, 'w') as new_file:
             new_file.write(content)
 
-    # launch the java node
-    arlocros_launch_cmd = 'rosrun rats ARLocROS arlocros.ARLoc __name:=ARLocROS'
-    execute_cmd(arlocros_launch_cmd, my_env, log_dir + '/launch_arlocros.log', tracker)
+    for i in range(number_of_arlocros):
+        # FIXME make this ros param explicit in the configuration
+        set_param_cmd = 'rosparam set ' + '/ARLocROS' + str(i) + '/instance_id ' + str(i)
+        execute_cmd_and_wait(set_param_cmd, my_env, log_dir + '/launch_arlocros' + str(i) + '.log')
+        # launch the java node
+        arlocros_launch_cmd = 'rosrun rats ARLocROS arlocros.ARLoc __name:=ARLocROS' + str(i)
+        execute_cmd(arlocros_launch_cmd, my_env, log_dir + '/launch_arlocros' + str(i) + '.log',
+                    tracker)
 
 
 def record_rosbag(my_env, tracker, log_dir):
