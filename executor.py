@@ -46,9 +46,20 @@ def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_dir):
 
 
 def launch_arlocros(my_env, tracker, log_dir):
+    rats_dir = execute_cmd_and_get_output('rospack find rats')
     # delete build script folder
-    build_script_dir = execute_cmd_and_get_output('rospack find rats') + '/ARLocROS/build/scripts'
+    build_script_dir = rats_dir + '/ARLocROS/build/scripts'
     shutil.rmtree(build_script_dir, ignore_errors=True)
+    # set jvm use 3g of heaps
+    arlocros_run_script_path = rats_dir + '//ARLocROS/build/install/ARLocROS/bin/ARLocROS'
+    with open(arlocros_run_script_path, 'r') as original_file:
+        content = original_file.read()
+
+    if 'DEFAULT_JVM_OPTS=""' in content:
+        content = content.replace('DEFAULT_JVM_OPTS=""', 'DEFAULT_JVM_OPTS="-Xmx3g -Xms3g"')
+        with open(arlocros_run_script_path, 'w') as new_file:
+            new_file.write(content)
+
     # launch the java node
     arlocros_launch_cmd = 'rosrun rats ARLocROS arlocros.ARLoc __name:=ARLocROS'
     execute_cmd(arlocros_launch_cmd, my_env, log_dir + '/launch_arlocros.log', tracker)
