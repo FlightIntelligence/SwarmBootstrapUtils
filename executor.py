@@ -51,7 +51,7 @@ def launch_arlocros(my_env, tracker, log_dir):
     build_script_dir = rats_dir + '/ARLocROS/build/scripts'
     shutil.rmtree(build_script_dir, ignore_errors=True)
     # set jvm use 3g of heaps
-    arlocros_run_script_path = rats_dir + '//ARLocROS/build/install/ARLocROS/bin/ARLocROS'
+    arlocros_run_script_path = rats_dir + '/ARLocROS/build/install/ARLocROS/bin/ARLocROS'
     with open(arlocros_run_script_path, 'r') as original_file:
         content = original_file.read()
 
