@@ -7,9 +7,16 @@ import time
 
 from SwarmBootstrapUtils import yaml_parser
 
+
 def send_new_mission(my_env, tracker, log_dir, mission):
-        send_new_mission_cmd = 'rostopic pub -1 /fi_demo/new_mission geometry_msgs/PoseArray "' + str(mission) + '"'
-        execute_cmd(send_new_mission_cmd, my_env, log_dir + '/new_mission_msgs.log', tracker)
+    send_new_mission_cmd = 'rostopic pub -1 /fi_demo/new_mission geometry_msgs/PoseArray "' + str(mission) + '"'
+    execute_cmd(send_new_mission_cmd, my_env, log_dir + '/new_mission_msgs.log', tracker)
+
+
+def land(my_env, tracker, log_dir):
+    land_cmd = 'rostopic pub -1 /bebop/land std_msgs/Empty'
+    execute_cmd(land_cmd, my_env, log_dir + '/commands.log', tracker)
+
 
 def point_camera_downward(my_env, tracker, log_dir):
     point_camera_cmd = 'rostopic pub /bebop/camera_control geometry_msgs/Twist [0.0,0.0,' \
@@ -168,12 +175,10 @@ def relay_one_topic(my_env, input_topic, output_topic, tracker, logdir):
 
 def execute_cmd(cmd, my_env, log_file_abs_path, tracker):
     print(cmd)
-    args = shlex.split(cmd)
-
-    print(args)
+    prepared_cmd = shlex.split(cmd)
 
     log_file = open_file(log_file_abs_path)
-    process = subprocess.Popen(args, env=my_env, stdout=log_file, stderr=subprocess.STDOUT)
+    process = subprocess.Popen(prepared_cmd, env=my_env, stdout=log_file, stderr=subprocess.STDOUT)
     tracker['processes'].append(process)
     tracker['opened_files'].append(log_file)
     return process
@@ -181,14 +186,18 @@ def execute_cmd(cmd, my_env, log_file_abs_path, tracker):
 
 def execute_cmd_and_wait(cmd, my_env, log_file_abs_path):
     print(cmd)
+    prepared_cmd = shlex.split(cmd)
+
     log_file = open_file(log_file_abs_path)
-    subprocess.call(cmd.split(), env=my_env, stdout=log_file, stderr=subprocess.STDOUT)
+    subprocess.call(prepared_cmd, env=my_env, stdout=log_file, stderr=subprocess.STDOUT)
     log_file.close()
 
 
 def execute_cmd_and_get_output(cmd):
     print(cmd)
-    return subprocess.check_output(cmd.split()).decode("utf-8").rstrip()
+
+    prepared_cmd = shlex.split(cmd)
+    return subprocess.check_output(prepared_cmd).decode("utf-8").rstrip()
 
 
 def open_file(file_abs_path):
