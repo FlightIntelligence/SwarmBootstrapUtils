@@ -1,12 +1,15 @@
 import os
 import shutil
-
+import shlex
 import subprocess
 
 import time
 
 from SwarmBootstrapUtils import yaml_parser
 
+def send_new_mission(my_env, tracker, log_dir, mission):
+        send_new_mission_cmd = 'rostopic pub -1 /fi_demo/new_mission geometry_msgs/PoseArray "' + str(mission) + '"'
+        execute_cmd(send_new_mission_cmd, my_env, log_dir + '/new_mission_msgs.log', tracker)
 
 def point_camera_downward(my_env, tracker, log_dir):
     point_camera_cmd = 'rostopic pub /bebop/camera_control geometry_msgs/Twist [0.0,0.0,' \
@@ -165,8 +168,12 @@ def relay_one_topic(my_env, input_topic, output_topic, tracker, logdir):
 
 def execute_cmd(cmd, my_env, log_file_abs_path, tracker):
     print(cmd)
+    args = shlex.split(cmd)
+
+    print(args)
+
     log_file = open_file(log_file_abs_path)
-    process = subprocess.Popen(cmd.split(), env=my_env, stdout=log_file, stderr=subprocess.STDOUT)
+    process = subprocess.Popen(args, env=my_env, stdout=log_file, stderr=subprocess.STDOUT)
     tracker['processes'].append(process)
     tracker['opened_files'].append(log_file)
     return process
