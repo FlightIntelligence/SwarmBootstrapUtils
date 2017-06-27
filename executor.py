@@ -18,31 +18,31 @@ def launch_bebop_autonomy(bebop_ip, my_env, tracker, log_dir):
     bebop_launch_cmd = 'roslaunch bebop_driver bebop_node.launch ip:=' + bebop_ip
 
     count = 1
-    while True:
-        bebop_autonomy = execute_cmd(bebop_launch_cmd, my_env,
+    # while True:
+    bebop_autonomy = execute_cmd(bebop_launch_cmd, my_env,
                                      log_dir + '/bebop_autonomy' + str(count) + '.log', tracker)
-        count += 1
-        listen_to_odom_cmd = 'rostopic echo -n 2 /bebop/image_raw'
-        listen_process = subprocess.Popen(listen_to_odom_cmd.split(), env=my_env,
-                                          stdout=subprocess.DEVNULL)
-        time.sleep(10)
-        status = listen_process.poll()
-        if status is None:
-            print('Did not receive any image. Relaunch bebop_autonomy.')
-            execute_cmd_and_wait('rosnode kill /bebop/bebop_driver', my_env,
-                                 log_dir + '/cleanup' + str(count) + '.log')
-            listen_process.kill()
-            while bebop_autonomy.poll() is None and listen_process.poll() is None:
-                time.sleep(0.1)
-                rosnode_cleanup = subprocess.Popen('rosnode cleanup'.split(), env=my_env,
-                                                   stdin=subprocess.PIPE)
-                rosnode_cleanup.communicate(b'y\n')
-                rosnode_cleanup.wait()
+ #        count += 1
+        # listen_to_odom_cmd = 'rostopic echo -n 2 /bebop/image_raw'
+        # listen_process = subprocess.Popen(listen_to_odom_cmd.split(), env=my_env,
+                                          # stdout=subprocess.DEVNULL)
+        # time.sleep(10)
+        # status = listen_process.poll()
+        # if status is None:
+            # print('Did not receive any image. Relaunch bebop_autonomy.')
+            # execute_cmd_and_wait('rosnode kill /bebop/bebop_driver', my_env,
+                                 # log_dir + '/cleanup' + str(count) + '.log')
+            # listen_process.kill()
+            # while bebop_autonomy.poll() is None and listen_process.poll() is None:
+                # time.sleep(0.1)
+                # rosnode_cleanup = subprocess.Popen('rosnode cleanup'.split(), env=my_env,
+                                                   # stdin=subprocess.PIPE)
+                # rosnode_cleanup.communicate(b'y\n')
+                # rosnode_cleanup.wait()
 
-            time.sleep(1)
-        else:
-            print('Received 2 image_raw messages')
-            return
+            # time.sleep(1)
+        # else:
+            # print('Received 2 image_raw messages')
+ #            return
 
 
 def launch_arlocros(my_env, number_of_arlocros, tracker, log_dir):
